@@ -80,11 +80,11 @@ h1 { grid-column: 1 / span 8; margin: 0; font-weight: 800; font-size: clamp(44px
 .game-title { margin: 12px 0 22px; font-weight: 800; font-size: clamp(48px, 5.8vw, 86px); line-height: 0.95; letter-spacing: -0.045em; }
 .pitch { margin: 0; max-width: 34ch; font-size: clamp(18px, 1.5vw, 20px); line-height: 1.5; }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 32px; }
-.play { display: inline-flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 24px 0 20px; border-radius: 6px; background: var(--ink); color: var(--paper); font-weight: 700; font-size: 17px; text-decoration: none; transition: transform 0.15s ease, background-color 0.15s ease; }
+.play, .btn { display: inline-flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 24px 0 20px; border: 1.5px solid transparent; border-radius: 6px; background: var(--ink); color: var(--paper); font-weight: 700; font-size: 17px; text-decoration: none; transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease; }
 .play svg { width: 14px; height: 14px; flex: none; }
-.play:hover { background: #000; transform: translateY(-1px); }
-.play:active { transform: translateY(0); }
-.play:focus-visible { outline: 3px solid var(--fg, var(--ink)); outline-offset: 3px; }
+.play:hover, .btn:hover { background: #000; transform: translateY(-1px); }
+.play:active, .btn:active { transform: translateY(0); }
+.play:focus-visible, .btn:focus-visible { outline: 3px solid var(--fg, var(--ink)); outline-offset: 3px; }
 .game--uq .play { background: var(--uq-lamp); color: var(--ink); }
 .game--uq .play:hover { background: #f4d8a8; }
 .hint { color: var(--sub); }
@@ -101,6 +101,15 @@ h1 { grid-column: 1 / span 8; margin: 0; font-weight: 800; font-size: clamp(44px
 .stack { position: relative; padding: 0 0 26% 12%; }
 .stack .phone { position: absolute; left: 0; bottom: 0; width: 30%; border-radius: 14px; }
 
+/* Screenshots float on a slow loop, each on its own phase. js/shots.js adds a small pull
+   toward the cursor through the separate `translate` property, so the two don't fight. */
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(var(--lift)); } }
+.shot { --lift: -10px; animation: float var(--dur, 7s) ease-in-out var(--delay, 0s) infinite; }
+.game--uq .shot { --delay: -1.6s; }
+.game--peak .shot { --delay: -4.2s; }
+.pair .shot:nth-child(2) { --dur: 8.4s; --delay: -3s; --lift: -12px; }
+.stack .phone { --dur: 6.2s; --delay: -2.4s; --lift: -12px; }
+
 /* About */
 .about { padding-top: clamp(72px, 9vw, 136px); padding-bottom: clamp(72px, 9vw, 136px); }
 .about-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 28px; }
@@ -110,11 +119,14 @@ h1 { grid-column: 1 / span 8; margin: 0; font-weight: 800; font-size: clamp(44px
 .about-body a { text-underline-offset: 4px; }
 
 /* Footer */
-.foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 28px; padding-top: 28px; padding-bottom: 48px; border-top: 1.5px solid var(--ink); }
-.contact { display: flex; flex-wrap: wrap; gap: 6px 40px; }
-.contact a { font-weight: 800; font-size: clamp(36px, 4.6vw, 64px); line-height: 1.05; letter-spacing: -0.045em; text-decoration: none; }
-.contact a:hover { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
-.foot-note { margin: 0; color: var(--muted); max-width: 40ch; }
+.foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 28px 48px; padding-top: 32px; padding-bottom: 56px; border-top: 1.5px solid var(--ink); }
+.foot-lead { flex: 1 1 480px; max-width: 720px; margin: 0; font-weight: 700; font-size: clamp(22px, 2.3vw, 30px); line-height: 1.2; letter-spacing: -0.025em; }
+.foot-lead span { display: block; text-wrap: balance; }
+.contact { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn { padding: 0 22px 0 18px; }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn--line { border-color: var(--ink); background: transparent; color: var(--ink); }
+.btn--line:hover { background: var(--ink); color: var(--paper); }
 
 @media (max-width: 860px) {
   h1, .lede { grid-column: 1 / -1; }
@@ -135,5 +147,6 @@ h1 { grid-column: 1 / span 8; margin: 0; font-weight: 800; font-size: clamp(44px
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .play { transition: none; }
+  .play, .btn { transition: none; }
+  .shot { animation: none; }
 }
